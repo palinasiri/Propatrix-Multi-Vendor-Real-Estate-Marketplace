@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Property Listings | Prop Verse</title>
+
+  <!-- AOS CSS for animations -->
+  <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background-color: #aadfdf;
+
+    }
+
+    .back-arrow {
+      display: inline-block;
+      margin: 15px 25px;
+      font-size: 1.4rem;
+      color: #d71a21;
+      text-decoration: none;
+      transition: transform 0.2s ease;
+    }
+
+    .back-arrow:hover {
+      transform: translateX(-5px);
+    }
+
+    .main-header {
+      background-color: #fff;
+      padding: 20px;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .logo {
+      font-size: 1.8rem;
+      color: #d71a21;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .nav-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .nav-bar .btn,
+    .nav-bar input {
+      padding: 10px 15px;
+      border: 1px solid #ccc;
+      border-radius: 30px;
+      background-color: #fff;
+      cursor: pointer;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+    }
+
+    .nav-bar .btn:active {
+      transform: scale(0.95);
+    }
+
+    .nav-bar .selected {
+      background-color: #d71a21;
+      color: white;
+      border: none;
+    }
+
+    .results-header {
+      padding: 15px 20px;
+      background-color: #fff;
+      border-top: 1px solid #ddd;
+      font-size: 1.1rem;
+    }
+
+    .property-list {
+      padding: 20px;
+    }
+
+    .property-card {
+      display: flex;
+      gap: 15px;
+      background: white;
+      border-radius: 10px;
+      padding: 15px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+      align-items: flex-start;
+      transition: transform 0.3s ease;
+    }
+
+    .property-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+    }
+
+    .property-card img {
+      width: 150px;
+      height: 100px;
+      border-radius: 8px;
+      object-fit: cover;
+    }
+
+    .property-info {
+      flex-grow: 1;
+    }
+
+    .property-info h3 {
+      font-size: 1.1rem;
+      margin-bottom: 5px;
+      color: #333;
+    }
+
+    .property-info p {
+      margin: 5px 0;
+      font-size: 0.95rem;
+    }
+
+    .owner {
+      color: #555;
+      font-style: italic;
+    }
+
+    .premium {
+      color: #d71a21;
+      font-weight: bold;
+    }
+
+    .price-section {
+      text-align: right;
+    }
+
+    .price-section h2 {
+      color: #007bff;
+      font-size: 1.3rem;
+      margin-bottom: 10px;
+    }
+
+    .contact-btn, .ask-btn {
+      display: block;
+      width: 130px;
+      padding: 8px 10px;
+      margin-bottom: 10px;
+      border: none;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .contact-btn {
+      background-color: #d71a21;
+      color: white;
+    }
+
+    .ask-btn {
+      background-color: #f5f5f5;
+      color: #555;
+      border: 1px solid #ccc;
+    }
+
+    .deposit-info {
+      font-size: 0.9rem;
+      color: #999;
+    }
+
+    .section-anchor {
+      height: 100px;
+      background-color: #ffffff;
+      margin: 50px auto;
+      text-align: center;
+      line-height: 100px;
+      font-size: 1.2rem;
+      color: #444;
+      border: 1px dashed #ccc;
+      border-radius: 10px;
+    }
+    .section-gallery {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  background-color: #fff;
+  padding: 20px 10px;
+  gap: 15px;
+  animation: fadeIn 1.5s ease;
+}
+
+.section-card {
+  text-align: center;
+  text-decoration: none;
+  width: 100px;
+  transition: transform 0.3s ease;
+}
+
+.section-card img {
+  width: 70px;
+  height: 70px;
+  margin-bottom: 10px;
+}
+
+.section-card p {
+  color: #333;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.section-card:hover {
+  transform: translateY(-5px) scale(1.05);
+}
+
+.anchor-target {
+  height: 30px;
+  margin-top: 40px;
+}
+
+/* Modal Styling */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 999;
+  left: 0; top: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.5);
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  text-align: center;
+  animation: slideUp 0.4s ease;
+  width: 300px;
+}
+
+.modal-content input {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.modal-content button {
+  margin-top: 15px;
+  padding: 10px 20px;
+  background-color: #d71a21;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+  </style>
+</head>
+<body>
+
+  <!-- Back Arrow -->
+  <a href="homepage.html" class="back-arrow">&#8592; Back to Home</a>
+
+  <header class="main-header">
+    <div class="logo">Propatrix</div>
+    <div class="nav-bar">
+      <button class="btn selected" onclick="scrollToSection('locations')">Locations</button>
+      <input type="text" placeholder="Visakhapatnam" />
+      <button class="btn" onclick="scrollToSection('localities')">Top Localities</button>
+      <button class="btn" onclick="scrollToSection('budget')">Budget</button>
+      <button class="btn" onclick="scrollToSection('flat')">Flat +7</button>
+      <button class="btn" onclick="scrollToSection('bhk')">BHK</button>
+      <button class="btn" onclick="scrollToSection('owners')">Owners</button>
+      <button class="btn" onclick="scrollToSection('filters')">More Filters</button>
+    </div>
+  </header>
+
+  <section class="results-header">
+    <p><strong>1258 results</strong> | Owner Properties for Rent in Visakhapatnam</p>
+  </section>
+
+  <section class="property-list">
+    <!-- Property Card 1 -->
+    <div class="property-card" data-aos="fade-up">
+      <img src="https://imagecdn.99acres.com/media1/26404/5/528085057M-1730355604101.webp" alt="Apartment" />
+      <div class="property-info">
+        <h3>3 BHK Apartment for Rent in Visalakshi Nagar Visakhapatnam</h3>
+        <p><strong>Furnishing:</strong> Unfurnished &nbsp;&nbsp; <strong>Bathroom:</strong> 3 &nbsp;&nbsp; <strong>Tenant:</strong> Bachelors</p>
+        <p>3 BHK, Multistorey Apartment available for rent in Visalakshi Nagar.</p>
+        <p class="owner">Owner: D Sekhar • <span class="premium">Premium Member</span></p>
+      </div>
+      <div class="price-section">
+        <h2>₹1,00,000</h2>
+        <button class="contact-btn">Contact Owner</button>
+        <button class="ask-btn">Ask Society Name</button>
+      </div>
+    </div>
+
+    <!-- Property Cards 2, 3, 4 with AOS effects -->
+    <div class="property-card" data-aos="fade-up" data-aos-delay="100">
+      <img src="https://5.imimg.com/data5/SELLER/Default/2024/4/406334166/QS/ZV/YQ/183085037/residential-plot.jpg" />
+      <div class="property-info">
+        <h3>2 BHK Apartment for Rent in TPT Colony Visakhapatnam</h3>
+        <p><strong>Furnishing:</strong> Furnished &nbsp;&nbsp; <strong>Bathroom:</strong> 2 &nbsp;&nbsp; <strong>Tenant:</strong> Bachelors/Family</p>
+        <p>Fully furnished 2 Bedroom apartment in prime Seethammadhara location.</p>
+        <p class="owner">Owner: K Ramesh • <span class="premium">Verified</span></p>
+      </div>
+      <div class="price-section">
+        <h2>₹90,000</h2>
+        <button class="contact-btn">Contact Owner</button>
+        <p class="deposit-info">Security Deposit</p>
+      </div>
+    </div>
+
+    <div class="property-card" data-aos="fade-up" data-aos-delay="200">
+      <img src="https://www.investopedia.com/thmb/bfHtdFUQrl7jJ_z-utfh8w1TMNA=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/houses_and_land-5bfc3326c9e77c0051812eb3.jpg" />
+      <div class="property-info">
+        <h3>2 BHK Apartment for Rent in TPT Colony Visakhapatnam</h3>
+        <p><strong>Furnishing:</strong> Furnished &nbsp;&nbsp; <strong>Bathroom:</strong> 2 &nbsp;&nbsp; <strong>Tenant:</strong> Bachelors/Family</p>
+        <p>Fully furnished 2 Bedroom apartment in prime Seethammadhara location.</p>
+        <p class="owner">Owner: K Ramesh • <span class="premium">Verified</span></p>
+      </div>
+      <div class="price-section">
+        <h2>₹2,00,000</h2>
+        <button class="contact-btn">Contact Owner</button>
+        <p class="deposit-info">Security Deposit</p>
+      </div>
+    </div>
+
+    <div class="property-card" data-aos="fade-up" data-aos-delay="300">
+      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSf4_sxgCkbZ7OhEs-nNRDsAZXnCKVTbB8q0w&s" />
+      <div class="property-info">
+        <h3>2 BHK Apartment for Rent in TPT Colony Visakhapatnam</h3>
+        <p><strong>Furnishing:</strong> Furnished &nbsp;&nbsp; <strong>Bathroom:</strong> 2 &nbsp;&nbsp; <strong>Tenant:</strong> Bachelors/Family</p>
+        <p>Fully furnished 2 Bedroom apartment in prime Seethammadhara location.</p>
+        <p class="owner">Owner: K Ramesh • <span class="premium">Verified</span></p>
+      </div>
+      <div class="price-section">
+        <h2>₹5,00,000</h2>
+        <button class="contact-btn">Contact Owner</button>
+        <p class="deposit-info">Security Deposit</p>
+      </div>
+    </div>
+    <!-- Section Navigation Gallery -->
+<section class="section-gallery">
+  <a href="#locations" class="section-card">
+    <img src="https://img.icons8.com/color/96/marker.png" alt="Locations" />
+    <p>Locations</p>
+  </a>
+  <a href="#localities" class="section-card">
+    <img src="https://img.icons8.com/color/96/home.png" alt="Top Localities" />
+    <p>Top Localities</p>
+  </a>
+  <a href="#budget" class="section-card">
+    <img src="https://img.icons8.com/color/96/money.png" alt="Budget" />
+    <p>Budget</p>
+  </a>
+  <a href="#flat" class="section-card">
+    <img src="https://img.icons8.com/color/96/city-buildings.png" alt="Flat +7" />
+    <p>Flat +7</p>
+  </a>
+  <a href="#bhk" class="section-card">
+    <img src="https://img.icons8.com/color/96/bedroom.png" alt="BHK" />
+    <p>BHK</p>
+  </a>
+  <a href="#owners" class="section-card">
+    <img src="https://img.icons8.com/color/96/user-group-man-man.png" alt="Owners" />
+    <p>Owners</p>
+  </a>
+  <a href="#filters" class="section-card">
+    <img src="https://img.icons8.com/color/96/filter.png" alt="Filters" />
+    <p>Filters</p>
+  </a>
+</section>
+
+<!-- Anchors (just dummy targets for now) -->
+<div id="locations" class="anchor-target"></div>
+<div id="localities" class="anchor-target"></div>
+<div id="budget" class="anchor-target"></div>
+<div id="flat" class="anchor-target"></div>
+<div id="bhk" class="anchor-target"></div>
+<div id="owners" class="anchor-target"></div>
+<div id="filters" class="anchor-target"></div>
+
+  </section>
+  <!-- AOS Script -->
+  <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+  <script>
+    AOS.init();
+
+    function scrollToSection(id) {
+      const el = document.getElementById(id);
+      if (el) el.scrollIntoView({ behavior: "smooth" });
+    }
+
+    console.log("Property listing page enhanced and loaded.");
+    document.querySelectorAll('.contact-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.getElementById('contactModal').style.display = 'flex';
+  });
+});
+
+function closeModal() {
+  const modal = document.getElementById('contactModal');
+  modal.style.display = 'none';
+  alert("Thank you! We’ll connect you shortly.");
+}
+
+// Smooth scroll
+document.querySelectorAll('.section-card').forEach(card => {
+  card.addEventListener('click', e => {
+    e.preventDefault();
+    const href = card.getAttribute('href');
+    const section = document.querySelector(href);
+    if (section) {
+      section.scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+});
+
+  </script>
+</body>
+</html>

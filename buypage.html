@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Property Search</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #a8edea, #fed6e3);
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+        }
+        
+        h1 {
+            color: #2c83e6;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .search-filters {
+            background-color: #f8fafd;
+            padding: 25px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+        
+        .filter-section {
+            margin-bottom: 25px;
+        }
+        
+        .filter-section h2 {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: #444;
+            border-bottom: 1px solid #e0e6ed;
+            padding-bottom: 8px;
+        }
+        
+        .filter-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .filter-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .filter-option label {
+            font-size: 14px;
+        }
+        
+        .filter-option input, .filter-option select {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        .city-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .city-option {
+            padding: 10px;
+            text-align: center;
+            background-color: #e6f0ff;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .city-option:hover, .city-option.selected {
+            background-color: #2c83e6;
+            color: white;
+        }
+        
+        .budget-range {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .budget-input {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .budget-input input {
+            width: 100px;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        .property-type {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .type-option {
+            padding: 10px 20px;
+            background-color: #e6f0ff;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .type-option:hover, .type-option.selected {
+            background-color: #2c83e6;
+            color: white;
+        }
+        
+        .search-btn {
+            display: block;
+            width: 200px;
+            margin: 20px auto 0;
+            padding: 12px;
+            background-color: #2c83e6;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        
+        .search-btn:hover {
+            background-color: #1a6fd0;
+        }
+        
+        .results-container {
+            display: none;
+            margin-top: 30px;
+        }
+        
+        .results-title {
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: #444;
+            text-align: center;
+        }
+        
+        .properties-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+        }
+        
+        .property-card {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease;
+        }
+        
+        .property-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .property-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            display: none; /* Initially hidden */
+        }
+        
+        .property-details {
+            padding: 20px;
+        }
+        
+        .property-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .property-location {
+            color: #666;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .property-features {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .feature {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .property-price {
+            font-size: 20px;
+            font-weight: 600;
+            color: #2c83e6;
+            margin-bottom: 15px;
+        }
+        
+        .view-btn {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #2c83e6;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            text-align: center;
+            text-decoration: none;
+        }
+        
+        .view-btn:hover {
+            background-color: #1a6fd0;
+        }
+        
+        .no-results {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+            display: none;
+        }
+        
+        @media (max-width: 768px) {
+            .city-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .property-type {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+  <header>
+    <a href="homepage.html" class="back-arrow">&#8592;</a>
+  </header>
+    <div class="container">
+        <h1>Property Search</h1>
+        
+        <div class="search-filters">
+            <div class="filter-section">
+                <h2>Property Details</h2>
+                <div class="filter-options">
+                    <div class="filter-option">
+                        <label for="floors">No. of floors:</label>
+                        <select id="floors">
+                            <option value="any">Any</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3+</option>
+                        </select>
+                    </div>
+                    <div class="filter-option">
+                        <label for="rooms">No. of rooms:</label>
+                        <select id="rooms">
+                            <option value="any">Any</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4+</option>
+                        </select>
+                    </div>
+                    <div class="filter-option">
+                        <label for="bedrooms">No. of bedrooms:</label>
+                        <select id="bedrooms">
+                            <option value="any">Any</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4+</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="filter-section">
+                <h2>Select City Localities</h2>
+                <div class="city-grid">
+                    <div class="city-option" data-city="bangalore">Bangalore</div>
+                    <div class="city-option" data-city="chennai">Chennai</div>
+                    <div class="city-option" data-city="mumbai">Mumbai</div>
+                    <div class="city-option" data-city="delhi">Delhi</div>
+                    <div class="city-option" data-city="kolkata">Kolkata</div>
+                </div>
+            </div>
+            
+            <div class="filter-section">
+                <h2>Budget</h2>
+                <div class="budget-range">
+                    <div class="budget-input">
+                        <input type="number" id="min-price" placeholder="10000">
+                        <span>to</span>
+                        <input type="number" id="max-price" placeholder="50000">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="filter-section">
+                <h2>Property Type</h2>
+                <div class="property-type">
+                    <div class="type-option selected" data-type="house">House</div>
+                    <div class="type-option" data-type="apartment">Apartment</div>
+                    <div class="type-option" data-type="villa">Villa</div>
+                </div>
+            </div>
+            
+            <button class="search-btn" id="searchBtn">Search Properties</button>
+        </div>
+        
+        <div class="no-results" id="noResults">
+            <h3>No properties found matching your criteria</h3>
+            <p>Try adjusting your filters to see more results</p>
+        </div>
+        
+        <div class="results-container" id="resultsContainer">
+            <h2 class="results-title">Matching Properties</h2>
+            <div class="properties-grid" id="propertiesGrid">
+                <!-- Properties will be displayed here by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample property data with image URLs
+        const properties = [
+            {
+                id: 1,
+                title: "Modern 2BHK House",
+                location: "Bangalore",
+                type: "house",
+                floors: 2,
+                rooms: 3,
+                bedrooms: 2,
+                price: 35000,
+                image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600"
+            },
+            {
+                id: 2,
+                title: "Spacious 3BHK Villa",
+                location: "Mumbai",
+                type: "villa",
+                floors: 3,
+                rooms: 5,
+                bedrooms: 3,
+                price: 75000,
+                image: "https://images.unsplash.com/photo-1605276374104-dee2a0ed3cd6?w=600"
+            },
+            {
+                id: 3,
+                title: "Cozy 1BHK House",
+                location: "Chennai",
+                type: "house",
+                floors: 1,
+                rooms: 2,
+                bedrooms: 1,
+                price: 15000,
+                image: "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?w=600"
+            },
+            {
+                id: 4,
+                title: "Luxury 4BHK House",
+                location: "Delhi",
+                type: "house",
+                floors: 3,
+                rooms: 6,
+                bedrooms: 4,
+                price: 90000,
+                image: "https://images.unsplash.com/photo-1605146769289-440113cc3d00?w=600"
+            },
+            {
+                id: 5,
+                title: "Beautiful 2BHK House",
+                location: "Kolkata",
+                type: "house",
+                floors: 2,
+                rooms: 3,
+                bedrooms: 2,
+                price: 25000,
+                image: "https://images.unsplash.com/photo-1600566752355-35792bedcfea?w=600"
+            },
+            {
+                id: 6,
+                title: "Elegant 3BHK House",
+                location: "Bangalore",
+                type: "house",
+                floors: 2,
+                rooms: 4,
+                bedrooms: 3,
+                price: 45000,
+                image: "https://images.unsplash.com/photo-1600585152221-90384fe7a7b5?w=600"
+            }
+        ];
+
+        // DOM elements
+        const searchBtn = document.getElementById('searchBtn');
+        const resultsContainer = document.getElementById('resultsContainer');
+        const propertiesGrid = document.getElementById('propertiesGrid');
+        const noResults = document.getElementById('noResults');
+        const cityOptions = document.querySelectorAll('.city-option');
+        const typeOptions = document.querySelectorAll('.type-option');
+
+        // Event listeners
+        searchBtn.addEventListener('click', searchProperties);
+        
+        // City selection
+        cityOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                cityOptions.forEach(opt => opt.classList.remove('selected'));
+                option.classList.add('selected');
+            });
+        });
+        
+        // Property type selection
+        typeOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                typeOptions.forEach(opt => opt.classList.remove('selected'));
+                option.classList.add('selected');
+            });
+        });
+
+        // Search function
+        function searchProperties() {
+            // Get filter values
+            const selectedCity = document.querySelector('.city-option.selected').dataset.city;
+            const propertyType = document.querySelector('.type-option.selected').dataset.type;
+            const floors = document.getElementById('floors').value;
+            const rooms = document.getElementById('rooms').value;
+            const bedrooms = document.getElementById('bedrooms').value;
+            const minPrice = document.getElementById('min-price').value || 0;
+            const maxPrice = document.getElementById('max-price').value || 999999;
+            
+           
+            const filteredProperties = properties.filter(property => {
+                
+                if (property.location.toLowerCase() !== selectedCity) return false;
+                
+                if (property.type !== propertyType) return false;
+                
+                
+                if (floors !== 'any') {
+                    if (floors === '3' && property.floors < 3) return false;
+                    if (floors !== '3' && property.floors !== parseInt(floors)) return false;
+                }
+                
+                
+                if (rooms !== 'any') {
+                    if (rooms === '4' && property.rooms < 4) return false;
+                    if (rooms !== '4' && property.rooms !== parseInt(rooms)) return false;
+                }
+                
+                if (bedrooms !== 'any') {
+                    if (bedrooms === '4' && property.bedrooms < 4) return false;
+                    if (bedrooms !== '4' && property.bedrooms !== parseInt(bedrooms)) return false;
+                }
+                
+        
+                if (property.price < parseInt(minPrice) || property.price > parseInt(maxPrice)) return false;
+                
+                return true;
+            });
+            displayResults(filteredProperties);
+        }
+        
+        
+        function displayResults(filteredProperties) {
+            propertiesGrid.innerHTML = '';
+            
+            if (filteredProperties.length === 0) {
+                resultsContainer.style.display = 'none';
+                noResults.style.display = 'block';
+            } else {
+                noResults.style.display = 'none';
+                resultsContainer.style.display = 'block';
+                
+                filteredProperties.forEach(property => {
+                    const propertyCard = document.createElement('div');
+                    propertyCard.className = 'property-card';
+                    propertyCard.innerHTML = `
+                        <img src="${property.image}" alt="${property.title}" class="property-image">
+                        <div class="property-details">
+                            <h3 class="property-title">${property.title}</h3>
+                            <div class="property-location">
+                                <span>📍</span> ${property.location}
+                            </div>
+                            <div class="property-features">
+                                <div class="feature">${property.floors} floor${property.floors > 1 ? 's' : ''}</div>
+                                <div class="feature">${property.rooms} room${property.rooms > 1 ? 's' : ''}</div>
+                                <div class="feature">${property.bedrooms} bedroom${property.bedrooms > 1 ? 's' : ''}</div>
+                            </div>
+                            <div class="property-price">₹${property.price.toLocaleString()}/mo</div>
+                            <button class="view-btn">View Details</button>
+                        </div>
+                    `;
+                    propertiesGrid.appendChild(propertyCard);
+                    
+                    // Show the image after the card is created
+                    const img = propertyCard.querySelector('.property-image');
+                    img.style.display = 'block';
+                });
+            }
+        }
+    </script>
+</body>
+</html>

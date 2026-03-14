@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Real Estate Management</title>
+  <style>
+    * {
+      margin:0;
+      padding:0;
+      box-sizing: border-box;
+    }
+    body{
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f5f5f5;
+      color: #333;
+      scroll-behavior: smooth;
+    }
+    header {
+      background: url('https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=1500&q=80') no-repeat center center/cover;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      text-align: center;
+      color: white;
+      position: relative;
+    }
+    header::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5);
+    }
+
+    header h1 {
+      font-size: 3rem;
+      z-index: 1;
+      animation: zoomIn 1.2s ease-out forwards;
+    }
+
+    header p {
+      margin-top: 10px;
+      font-size: 1.2rem;
+      z-index: 1;
+      animation: fadeInUp 1.5s ease-out forwards;
+    }
+
+    .btn {
+      margin-top: 20px;
+      padding: 12px 25px;
+      font-size: 1rem;
+      border: none;
+      background-color: #ff6b6b;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+      z-index: 1;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 12px #ff6b6b;
+      background-color: #ff4757;
+    }
+    section {
+      padding: 60px 20px;
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    .section-title {
+      font-size: 2.2rem;
+      text-align: center;
+      margin-bottom: 40px;
+      animation: slideDown 1s ease-out;
+    }
+
+    .properties {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      overflow: hidden;
+      transition: transform 0.4s, box-shadow 0.4s;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    .card.show {
+      opacity: 1;
+      transform: translateY(0);
+      animation: flipIn 0.6s ease-in;
+    }
+
+    .card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+    }
+
+    .card img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+    }
+
+    .card-content {
+      padding: 15px;
+    }
+
+    .card-content h3 {
+      font-size: 1.2rem;
+      margin-bottom: 10px;
+    }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes zoomIn {
+      0% { transform: scale(0.8); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    @keyframes slideDown {
+      0% { transform: translateY(-30px); opacity: 0; }
+      100% { transform: translateY(0); opacity: 1; }
+    }
+
+    @keyframes flipIn {
+      from {
+        transform: rotateY(90deg);
+        opacity: 0;
+      }
+      to {
+        transform: rotateY(0deg);
+        opacity: 1;
+      }
+    }
+
+    footer {
+      background-color: #333;
+      color: white;
+      padding: 30px 20px;
+      text-align: center;
+    }
+
+    footer p {
+      margin-bottom: 5px;
+    }
+
+    .fade-in {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.6s ease-out;
+    }
+
+    .fade-in.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 600px) {
+      header h1 {
+        font-size: 2rem;
+      }
+
+      header p {
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Find Your Dream Home</h1>
+    <p>Explore top properties in your city with ease</p>
+    <button class="btn" onclick="window.location.href='login.html'">Explore Listings</button>
+
+  </header>
+  <section>
+    <h2 class="section-title">Featured Listings</h2>
+    <div class="properties">
+      <div class="card fade-in">
+        <img src="https://images.unsplash.com/photo-1568605114967-8130f3a36994?auto=format&fit=crop&w=800&q=80" alt="House 1">
+        <div class="card-content">
+          <h3>Modern Family Home</h3>
+          <p>3BHK in Vizag · ₹60 Lakhs</p>
+        </div>
+      </div>
+      <div class="card fade-in">
+        <img src="https://media.istockphoto.com/id/506903162/photo/luxurious-villa-with-pool.jpg?s=1024x1024&w=is&k=20&c=Q7g8woSGCJ1ubqEuHecfFo00qzZB2cmNC_HXJAMDMpY=" alt="House 2">
+        <div class="card-content">
+          <h3>Luxury Villa</h3>
+          <p>5BHK in Hyderabad · ₹2.1 Cr</p>
+        </div>
+      </div>
+      <div class="card fade-in">
+        <img src="https://img.freepik.com/premium-photo/cozy-apartment-living-room-with-giant-windows-city_961875-491.jpg?w=740">
+        <div class="card-content">
+          <h3>Cozy Apartment</h3>
+          <p>2BHK in Bangalore · ₹45 Lakhs</p>
+        </div>
+      </div>
+      <div class="card fade-in">
+        <img src="https://images.unsplash.com/photo-1501183638710-841dd1904471?auto=format&fit=crop&w=800&q=80" alt="House 4">
+        <div class="card-content">
+          <h3>Urban Studio</h3>
+          <p>1BHK in Pune · ₹28 Lakhs</p>
+        </div>
+      </div>
+      <div class="card fade-in">
+        <img src="https://image.inspiringvillas.com/prd/upload/property/villa-hin-choeng-mon-beach-koh-samui1568214645095.jpeg" alt="House 5">
+        <div class="card-content">
+          <h3>Beachside Bungalow</h3>
+          <p>4BHK in Goa · ₹1.8 Cr</p>
+        </div>
+      </div>
+      <div class="card fade-in">
+        <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80" alt="House 6">
+        <div class="card-content">
+          <h3>Elegant Duplex</h3>
+          <p>3BHK in Chennai · ₹75 Lakhs</p>
+        </div>
+      </div>
+    </div>
+
+  </section>
+  <script>
+    const elements = document.querySelectorAll('.fade-in');
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if(entry.isIntersecting){
+          entry.target.classList.add('show');
+        }
+      });
+    }, {
+      threshold: 0.1
+    });
+
+    elements.forEach(el => observer.observe(el));
+  </script>
+
+</body>
+</html>

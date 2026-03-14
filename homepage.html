@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Propatrix</title>
+    <style>
+        * {
+            scroll-behavior: smooth;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background: linear-gradient(135deg, #a8edea, #fed6e3);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;`
+            animation: fadeIn 1.2s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        header {
+            width: 100%;
+            background-color: #fff;
+            padding: 15px 0;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            position: relative;
+        }
+
+        .logo {
+            text-align: center;
+            font-size: 2em;
+            font-weight: bold;
+            color: #333;
+            animation: pulse 2s infinite;
+            margin-bottom: 10px;
+        }
+
+        @keyframes pulse {
+            0%, 100% { text-shadow: 0 0 5px #007bff; }
+            50% { text-shadow: 0 0 15px #007bff; }
+        }
+
+        nav {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 5px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+            font-size: 1.1em;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        nav a::after {
+            content: "";
+            position: absolute;
+            width: 0;
+            height: 2px;
+            left: 0;
+            bottom: -4px;
+            background-color: #007bff;
+            transition: width 0.3s ease;
+        }
+
+        nav a:hover::after {
+            width: 100%;
+        }
+
+        nav a:hover {
+            color: #007bff;
+        }
+
+        /* Menu Icon Styles */
+        .menu-icon {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            cursor: pointer;
+            display: block;
+            z-index: 101;
+            padding: 10px;
+        }
+
+        .menu-icon span {
+            display: block;
+            width: 25px;
+            height: 3px;
+            background-color: #333;
+            margin: 5px 0;
+            transition: all 0.3s ease;
+        }
+
+        .menu-icon.open span:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+
+        .menu-icon.open span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .menu-icon.open span:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -6px);
+        }
+
+        /* User Menu Dropdown */
+        .user-menu {
+            position: absolute;
+            right: 20px;
+            top: 70px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            width: 200px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+
+        .user-menu.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .user-menu a {
+            display: block;
+            padding: 12px 20px;
+            color: #333;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .user-menu a:hover {
+            background-color: #f5f5f5;
+            color: #007bff;
+        }
+
+        .user-menu a i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            nav {
+                position: fixed;
+                top: 0;
+                left: -100%;
+                width: 80%;
+                height: 100vh;
+                background-color: white;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                transition: left 0.3s ease;
+                z-index: 99;
+                box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+            }
+            
+            nav.active {
+                left: 0;
+            }
+        }
+
+        /* Rest of your existing styles */
+        .search-container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            margin-top: 140px;
+            padding: 0 20px;
+            position: relative;
+            z-index: 5;
+        }
+
+        .search-bar {
+            display: flex;
+            width: 60%;
+            max-width: 800px;
+            position: relative;
+            animation: slideDown 1s ease-in-out;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .search-bar input {
+            flex-grow: 1;
+            padding: 12px 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 1em;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+
+        .search-bar input:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2);
+        }
+
+        .search-bar button {
+            position: absolute;
+            right: 0;
+            top: 0;
+            height: 100%;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 0 15px;
+            border-radius: 0 8px 8px 0;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s ease, transform 0.2s;
+        }
+
+        .search-bar button:hover {
+            background-color: #0056b3;
+            transform: scale(1.02);
+        }
+
+        .search-hints {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 0 0 8px 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            z-index: 10;
+            display: none;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .search-hints.show {
+            display: block;
+        }
+
+        .hint-item {
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .hint-item:hover {
+            background-color: #f5f5f5;
+        }
+
+        .hint-item .category {
+            font-size: 0.8em;
+            color: #666;
+            margin-left: 5px;
+        }
+
+        main {
+            width: 100%;
+            max-width: 1200px;
+            padding: 20px;
+            margin-top: 160px;
+        }
+
+        section {
+            margin-bottom: 40px;
+        }
+
+        h2 {
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        h2::after {
+            content: "";
+            display: block;
+            width: 60px;
+            height: 4px;
+            margin: 8px auto 0;
+            background: #007bff;
+            border-radius: 4px;
+            animation: glowBar 2s infinite ease-in-out;
+        }
+
+        @keyframes glowBar {
+            0%, 100% { width: 60px; opacity: 0.7; }
+            50% { width: 100px; opacity: 1; }
+        }
+
+        .project-cards, .agent-cards {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .project-card {
+            transition: all 0.4s ease-in-out;
+            transform-origin: center;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 20px;
+            width: 28%;
+            min-width: 260px;
+            max-width: 320px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .project-card:hover {
+            transform: scale(1.03) rotate(-1deg);
+            border-color: #007bff;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+        }
+
+        .project-card img {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+            border-radius: 8px;
+            transition: transform 0.3s ease, filter 0.3s ease;
+        }
+
+        .project-card img:hover {
+            transform: scale(1.07);
+            filter: brightness(1.1);
+        }
+
+        .highlight {
+            color: #e74c3c;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .agent-card {
+            max-width: 280px;
+            padding: 20px;
+            text-align: center;
+            border-radius: 16px;
+            background: linear-gradient(135deg, #f0f9ff, #c1e8ff);
+            box-shadow: 0 10px 25px rgba(0, 123, 255, 0.1);
+            animation: slideInFade 0.6s ease forwards, floatPulse 5s ease-in-out infinite;
+            opacity: 0;
+            transition: transform 0.3s ease;
+        }
+
+        .agent-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 12px 25px rgba(0, 123, 255, 0.2);
+        }
+
+        .agent-card img {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            border: 3px solid #007bff;
+            object-fit: cover;
+            margin-bottom: 10px;
+            transition: transform 0.3s ease;
+        }
+
+        .agent-card:hover img {
+            transform: scale(1.1);
+        }
+
+        @keyframes slideInFade {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes floatPulse {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        button {
+            padding: 10px 20px;
+            border-radius: 8px;
+            background: linear-gradient(to right, #007bff, #00c6ff);
+            border: none;
+            color: white;
+            font-weight: bold;
+            transition: transform 0.2s ease, background 0.3s ease;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background: linear-gradient(to right, #0056b3, #0099cc);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+        }
+
+        footer {
+            width: 100%;
+            background-color: #fff;
+            padding: 20px 0;
+            text-align: center;
+            color: #777;
+            font-size: 0.9em;
+            margin-top: 40px;
+            box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+
+    <header>
+        <div class="header-content">
+            <div class="logo">Propatrix</div>
+
+            <nav id="mainNav">
+                <a href="buypage.html">Buy</a>
+                <a href="rentpage.html">plot/Land</a>
+                <a href="newprojects.html">New Projects</a>
+               <a href="postproperties.html">post Properties</a>
+
+            </nav>
+        </div>
+        
+        <!-- Menu Icon -->
+        <div class="menu-icon" id="menuIcon">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        
+        <!-- User Menu Dropdown -->
+        <div class="user-menu" id="userMenu">
+            <a href="profile.html"><i class="fas fa-user"></i> Profile</a>
+            <a href="adminpage.html"><i class="fas fa-user"></i> Admin</a>
+            <a href="accounts.html"><i class="fas fa-wallet"></i> Accounts</a>
+            <a href="settings.html"><i class="fas fa-sliders-h"></i> Settings</a>
+            <a href="#" id="signOutBtn"><i class="fas fa-sign-out-alt"></i> Sign Out</a>
+        </div>
+    </header>
+
+    <div class="search-container">
+        <div class="search-bar">
+            <input type="text" id="propertySearch" placeholder="Search by location, area, project..." list="locationHints" autocomplete="off">
+            <button type="button">Search</button>
+            
+            <!-- Location hints dropdown -->
+            <div class="search-hints" id="searchHints">
+                <div class="hint-item" data-value="Mumbai">Mumbai <span class="category">(Location)</span></div>
+                <div class="hint-item" data-value="Bangalore">Bangalore <span class="category">(Location)</span></div>
+                <div class="hint-item" data-value="Delhi">Delhi <span class="category">(Location)</span></div>
+                <div class="hint-item" data-value="Hyderabad">Hyderabad <span class="category">(Location)</span></div>
+                <div class="hint-item" data-value="Pune">Pune <span class="category">(Location)</span></div>
+                <div class="hint-item" data-value="Chennai">Chennai <span class="category">(Location)</span></div>
+                <div class="hint-item" data-value="Uki Aura">Uki Aura <span class="category">(Project)</span></div>
+                <div class="hint-item" data-value="Sunset Heights">Sunset Heights <span class="category">(Project)</span></div>
+                <div class="hint-item" data-value="Sky Villas">Sky Villas <span class="category">(Project)</span></div>
+                <div class="hint-item" data-value="2BHK">2BHK <span class="category">(Property Type)</span></div>
+                <div class="hint-item" data-value="3BHK">3BHK <span class="category">(Property Type)</span></div>
+                <div class="hint-item" data-value="4BHK">4BHK <span class="category">(Property Type)</span></div>
+            </div>
+        </div>
+    </div>
+
+    <main>
+        <section>
+            <h2>High Demand E-states</h2>
+            <div class="project-cards">
+                <div class="project-card">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSEqT0vPuJHdwn3sCIoO2n1iCfQftSOyj3_Eg&s" alt="Uki Aura">
+                    <div class="project-info">
+                        <h3>Uki Aura</h3>
+                        <p>by Uki Infrastructure</p>
+                        <p>3BHK Apartment, Visakhapatnam</p>
+                        <p class="highlight">₹80L - ₹94L</p>
+                    </div>
+                </div>
+                <div class="project-card">
+                    <img src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914" alt="Sunset Heights">
+                    <div class="project-info">
+                        <h3>Sunset Heights</h3>
+                        <p>by Golden Brick</p>
+                        <p>2 & 3BHK, Pune</p>
+                        <p class="highlight">₹60L - ₹75L</p>
+                    </div>
+                </div>
+                
+                <div class="project-card">
+                    <img src="https://images.unsplash.com/photo-1568605114967-8130f3a36994" alt="Sky Villas">
+                    <div class="project-info">
+                        <h3>Sky Villas</h3>
+                        <p>by Elite Builders</p>
+                        <p>4BHK Villas, Hyderabad</p>
+                        <p class="highlight">₹1.2Cr - ₹1.8Cr</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>Preferred Agents</h2>
+            <div class="agent-cards">
+                <div class="agent-card" style="animation-delay: 0.1s">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRfdOlHBzCc4jiulFcgYLNsxssq_dProvhLCQ&s" alt="Sandeep Rao">
+                    <div class="agent-info">
+                        <h3>Sandeep Rao</h3>
+                        <p>20+ Properties</p>
+                    </div>
+                    <button><a href="view.html">View</a></button>
+                </div>
+                <div class="agent-card" style="animation-delay: 0.2s">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSVBIbgJxFGn8Gm6X0ztbACJuZ81oa7bChySHt_VPovWrEx3Yl8ddrJpDpYkWpsLLsvFhc&usqp=CAU" alt="Ritika Jain">
+                    <div class="agent-info">
+                        <h3>Ritika Jain</h3>
+                        <p>15+ Properties</p>
+                    </div>
+                    <button>View</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Propatrix. All rights reserved.</p>
+    </footer>
+
+    <script>
+        const menuIcon = document.getElementById('menuIcon');
+        const userMenu = document.getElementById('userMenu');
+        const mainNav = document.getElementById('mainNav');
+        
+        menuIcon.addEventListener('click', function(e) {
+            e.stopPropagation(); 
+            this.classList.toggle('open');
+            userMenu.classList.toggle('show');
+            
+            // On mobile, toggle the main navigation
+            if (window.innerWidth <= 768) {
+                mainNav.classList.toggle('active');
+            }
+        });
+        
+        // Close menu when clicking outside
+        
+        document.addEventListener('click', function() {
+            if (userMenu.classList.contains('show')) {
+                userMenu.classList.remove('show');
+                menuIcon.classList.remove('open');
+            }
+            if (window.innerWidth <= 768 && mainNav.classList.contains('active')) {
+                mainNav.classList.remove('active');
+            }
+        });
+        
+        // Prevent user menu from closing when clicking inside it
+        userMenu.addEventListener('click', function(e) {
+            e.stopPropagation();
+        });
+        
+        // Sign Out Functionality
+        document.getElementById('signOutBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            if (confirm('Are you sure you want to sign out?')) {
+                alert('Signing out...');
+                // In a real app, you would redirect to logout page
+                // window.location.href = '/logout';
+            }
+        });
+
+        // Search functionality with hints
+        const searchInput = document.getElementById('propertySearch');
+        const searchHints = document.getElementById('searchHints');
+        const hintItems = document.querySelectorAll('.hint-item');
+
+        // Show hints when input is focused or has value
+        searchInput.addEventListener('focus', () => {
+            searchHints.classList.add('show');
+        });
+
+        searchInput.addEventListener('blur', () => {
+            // Small delay to allow click on hint items
+            setTimeout(() => {
+                searchHints.classList.remove('show');
+            }, 200);
+        });
+
+        // Filter hints based on input
+        searchInput.addEventListener('input', () => {
+            const value = searchInput.value.toLowerCase();
+            let hasMatches = false;
+            
+            hintItems.forEach(item => {
+                const text = item.textContent.toLowerCase();
+                if (text.includes(value)) {
+                    item.style.display = 'block';
+                    hasMatches = true;
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+            
+            // Show hints only if there are matches
+            searchHints.classList.toggle('show', hasMatches && value.length > 0);
+        });
+        hintItems.forEach(item => {
+            item.addEventListener('mousedown', (e) => {
+                e.preventDefault(); 
+                searchInput.value = item.getAttribute('data-value');
+                searchHints.classList.remove('show');
+            });
+        });
+
+        // Perform search on button click or enter
+        document.querySelector('.search-bar button').addEventListener('click', performSearch);
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                performSearch();
+            }
+        });
+
+        function performSearch() {
+            const query = searchInput.value.trim();
+            if (query) {
+                alert(`Searching for: ${query}`);
+                // Here you would typically make an AJAX call or navigate to search results
+            }
+        }
+  document.getElementById("admin").addEventListener("click", function () {
+    window.location.href = "adminpage.html";
+  });
+
+    </script>
+</body>
+</html>
